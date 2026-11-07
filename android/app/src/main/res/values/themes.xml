@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.BraveTube" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">#0F1015</item>
+        <item name="android:statusBarColor">#0F1015</item>
+        <item name="android:navigationBarColor">#0F1015</item>
+        <item name="colorPrimary">#FF6200</item>
+        <item name="colorPrimaryDark">#0F1015</item>
+        <item name="colorAccent">#FF0033</item>
+    </style>
+</resources>

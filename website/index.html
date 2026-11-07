@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BraveTube — YouTube Without Ads | Android App & Brave Extension</title>
+  <meta name="description" content="Download BraveTube and Brave AdShield: Undetectable YouTube ad skipping with 16x turbo skip, background audio playback with screen locked, and zero banners.">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="assets/qrcode.min.js"></script>
+</head>
+<body>
+  <!-- Ambient background glow -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <img src="assets/icon.png" alt="BraveTube Logo" class="brand-logo">
+        <span class="brand-name">BraveTube</span>
+        <span class="badge-pill">v1.0.0 Live</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#downloads">Downloads</a>
+        <a href="#install">Install Guide</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a href="#downloads" class="btn btn-sm btn-primary">Get App Free</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-container">
+      <div class="hero-tag">
+        <span class="tag-sparkle">⚡</span>
+        <span>Undetectable Hybrid Engine • No YouTube Premium Needed</span>
+      </div>
+
+      <h1 class="hero-title">
+        Stream YouTube <span class="gradient-text">Without Ads.</span><br>
+        Clean. Fast. Everywhere.
+      </h1>
+
+      <p class="hero-subtitle">
+        Say goodbye to 30-second unskippable ads, sponsored clutter, and anti-adblock blackouts. 
+        Enjoy 16x turbo fast-forward skipping, background audio with your screen locked, and crystal-clear 4K playback.
+      </p>
+
+      <!-- Primary Action Buttons -->
+      <div class="hero-cta-group" id="downloads">
+        <a href="downloads/BraveTube.apk" download="BraveTube.apk" class="btn btn-hero btn-android" id="btnDownloadAndroid">
+          <div class="btn-icon">🤖</div>
+          <div class="btn-content">
+            <span class="btn-label">Download for Android</span>
+            <span class="btn-meta">Direct APK • 3.0 MB • Android 8.0+</span>
+          </div>
+        </a>
+
+        <a href="downloads/BraveAdShield-Extension.zip" download="BraveAdShield-Extension.zip" class="btn btn-hero btn-brave" id="btnDownloadBrave">
+          <div class="btn-icon">🦁</div>
+          <div class="btn-content">
+            <span class="btn-label">Brave / Chrome Extension</span>
+            <span class="btn-meta">Manifest V3 • 41 KB • Undetectable</span>
+          </div>
+        </a>
+
+        <a href="downloads/YouTube-AdFree-Mac.zip" download="YouTube-AdFree-Mac.zip" class="btn btn-hero btn-mac" id="btnDownloadMac">
+          <div class="btn-icon">🍎</div>
+          <div class="btn-content">
+            <span class="btn-label">Standalone macOS App</span>
+            <span class="btn-meta">Native .app • 29 KB • macOS 11+</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Live Mobile QR Code Scanner -->
+      <div class="qr-card">
+        <div class="qr-box" id="qrcode"></div>
+        <div class="qr-info">
+          <div class="qr-title">📱 Scan to Download on Android Phone</div>
+          <p class="qr-desc">
+            Point your phone's camera at this QR code to download <strong class="text-orange">BraveTube.apk</strong> directly over your local Wi-Fi.
+          </p>
+          <div class="network-badge">
+            <span class="pulse-dot"></span>
+            <span id="qrUrlLabel">Direct Link Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Demo / Engine Simulation -->
+  <section class="demo-section">
+    <div class="section-container">
+      <div class="mockup-window">
+        <div class="window-bar">
+          <div class="window-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="window-address">
+            <span>🔒 https://www.youtube.com</span>
+            <span class="status-shield">🛡️ Brave AdShield Active</span>
+          </div>
+        </div>
+        <div class="mockup-player">
+          <div class="mockup-video-bg">
+            <div class="video-overlay-status">
+              <span class="skip-badge">⚡ Ad Detected → Skipped in 0.04s</span>
+              <h2>Lo-Fi Chill Beats [24/7 Stream]</h2>
+              <p>16x Turbo Playback Acceleration • Zero Audio Leak</p>
+            </div>
+            <div class="floating-pills">
+              <div class="pill">✓ 0 Banners</div>
+              <div class="pill">✓ Background Audio On</div>
+              <div class="pill">✓ Anti-Adblock Bypass Active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Grid -->
+  <section class="features" id="features">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-pill">Why BraveTube?</span>
+        <h2 class="section-title">Engineered to Outsmart YouTube Ad Technology</h2>
+        <p class="section-desc">Standard ad blockers get detected and blocked. BraveTube works from inside the player runtime.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>16x Turbo Ad Fast-Forwarding</h3>
+          <p>Instead of breaking video requests (which triggers YouTube's 3-strike blackout), the engine accelerates ads at 16x and seeks to duration in ~50ms. Telemetry reports the ad completed legitimately.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎧</div>
+          <h3>Background Audio Playback</h3>
+          <p>Listen to podcasts, music, and interviews with your Android phone screen locked or while using other apps. No YouTube Premium subscription required.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🖼️</div>
+          <h3>Picture-in-Picture (PiP)</h3>
+          <p>Tap Home on Android or minimize your browser window to seamlessly transition playback into a floating mini-player.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Anti-Adblock Immunity</h3>
+          <p>Neutralizes YouTube's warning dialogs ("Ad blockers violate YouTube Terms"), removes backdrop screen dimming, and restores playback instantly.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔇</div>
+          <h3>Zero-Leak Mute Guard</h3>
+          <p>Mutes the audio channel during ad skips so you never hear even a fraction of a second of ad audio before the main video resumes.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>100% Private & Open</h3>
+          <p>No user telemetry, no cloud relays, no tracking. Runs entirely on your local device with minimal memory consumption.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step-by-Step Installation Guides -->
+  <section class="install-section" id="install">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-pill">Quick Setup</span>
+        <h2 class="section-title">Install in Less Than 60 Seconds</h2>
+      </div>
+
+      <div class="install-tabs">
+        <button class="tab-btn active" data-tab="android-tab">📱 Android App</button>
+        <button class="tab-btn" data-tab="brave-tab">🦁 Brave Browser Extension</button>
+        <button class="tab-btn" data-tab="mac-tab">🍎 macOS App</button>
+      </div>
+
+      <!-- Android Guide -->
+      <div class="tab-content active" id="android-tab">
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-num">1</span>
+            <h4>Download APK</h4>
+            <p>Click the <strong>Download for Android</strong> button or scan the QR code above with your phone.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">2</span>
+            <h4>Allow Installation</h4>
+            <p>Tap the downloaded <code>BraveTube.apk</code> and enable <em>"Allow from this source"</em> if prompted.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">3</span>
+            <h4>Enjoy YouTube</h4>
+            <p>Open <strong>BraveTube</strong> from your home screen. Enjoy zero ads and background listening!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brave Guide -->
+      <div class="tab-content" id="brave-tab">
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-num">1</span>
+            <h4>Download & Extract</h4>
+            <p>Download <code>BraveAdShield-Extension.zip</code> and unzip it on your computer.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">2</span>
+            <h4>Developer Mode</h4>
+            <p>Open <code>brave://extensions</code> in Brave and toggle <strong>Developer mode</strong> in the top-right.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">3</span>
+            <h4>Load Unpacked</h4>
+            <p>Click <strong>"Load unpacked"</strong> and select the unzipped folder. Open YouTube to test!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mac Guide -->
+      <div class="tab-content" id="mac-tab">
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-num">1</span>
+            <h4>Download Zip</h4>
+            <p>Download <code>YouTube-AdFree-Mac.zip</code> and unzip it.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">2</span>
+            <h4>Move to Applications</h4>
+            <p>Drag <strong>YouTube Ad-Free.app</strong> into your Applications folder.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">3</span>
+            <h4>Launch via Spotlight</h4>
+            <p>Press <code>Cmd + Space</code>, type <strong>YouTube Ad-Free</strong>, and hit enter!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section" id="faq">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-pill">FAQ</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-accordion">
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Why doesn't YouTube block this like other adblockers?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Traditional adblockers abort network connections to Google ad servers, which YouTube detects with anti-adblock scripts. BraveTube uses a hybrid fast-forward technique: when an ad is cued, it accelerates the player to 16x speed and jumps directly to duration in &lt;50ms. YouTube's servers register that the ad played legitimately.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Does the Android app require rooting or Google Play Services?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>No root required, and no Google Play Services dependency. It runs on any Android phone (Android 8.0 Oreo through Android 15+). You can also sign into your Google account inside the app if you want your subscriptions and watch history saved.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>How does background playback work on Android?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>YouTube normally pauses video whenever the page is hidden or the phone screen turns off. BraveTube neutralizes the HTML5 Page Visibility API, telling YouTube that the player is always visible and focused, enabling seamless background playback.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Is BraveTube free and safe?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes, 100% free and open-source. There are zero trackers, analytics scripts, or remote server dependencies.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <img src="assets/icon.png" alt="Logo" class="brand-logo sm">
+        <span>BraveTube • Ad-Free YouTube Everywhere</span>
+      </div>
+      <div class="footer-links">
+        <a href="#downloads">Downloads</a>
+        <a href="#features">Features</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-copy">
+        <span>Built with ❤️ for privacy and uninterrupted streaming. Not affiliated with Google or YouTube.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

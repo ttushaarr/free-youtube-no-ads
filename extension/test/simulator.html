@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Brave AdShield - Test Simulation Bench</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body {
+      background: #0f1015;
+      color: #f1f5f9;
+      font-family: -apple-system, sans-serif;
+      padding: 30px;
+    }
+    .test-box {
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background: #1e293b;
+    }
+    .status {
+      font-weight: bold;
+      color: #38bdf8;
+    }
+    .btn {
+      background: #ff6200;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 10px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <h1>Brave AdShield for YouTube - Verification Bench</h1>
+  <p>This test page verifies cosmetic banner suppression and ad-detection logic.</p>
+
+  <div class="test-box">
+    <h3>1. Cosmetic Banner Suppression Test</h3>
+    <div id="masthead-ad" style="background: red; padding: 15px; margin: 10px 0;">
+      [TEST AD] Masthead banner (Should be hidden by styles.css)
+    </div>
+    <div class="ytd-ad-slot-renderer" style="background: red; padding: 15px; margin: 10px 0;">
+      [TEST AD] Feed Ad Slot (Should be hidden by styles.css)
+    </div>
+    <div id="player-ads" style="background: red; padding: 15px; margin: 10px 0;">
+      [TEST AD] Watch page sidebar ad (Should be hidden by styles.css)
+    </div>
+  </div>
+
+  <div class="test-box">
+    <h3>2. Simulated Player & Ad Trigger</h3>
+    <div id="movie_player" class="html5-video-player" style="position: relative; width: 480px; height: 270px; background: #000;">
+      <video id="testVideo" class="html5-main-video" style="width: 100%; height: 100%;" src="data:video/mp4;base64," controls></video>
+      <div class="ytp-ad-module"></div>
+    </div>
+    <div style="margin-top: 15px;">
+      <button class="btn" id="btnSimulateAd">Simulate Pre-Roll Ad</button>
+      <button class="btn" id="btnSimulateAntiAdblock">Simulate Anti-Adblock Popup</button>
+      <button class="btn" id="btnResetSim" style="background: #475569;">Reset</button>
+    </div>
+    <div id="simLog" style="margin-top: 15px; font-family: monospace; font-size: 13px; color: #a5f3fc;"></div>
+  </div>
+
+  <script>
+    const log = (msg) => {
+      document.getElementById('simLog').innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+    };
+
+    document.getElementById('btnSimulateAd').addEventListener('click', () => {
+      const player = document.getElementById('movie_player');
+      player.classList.add('ad-showing');
+      const skipSlot = document.createElement('div');
+      skipSlot.className = 'ytp-ad-skip-button-modern';
+      skipSlot.innerText = 'Skip Ad';
+      skipSlot.style.cursor = 'pointer';
+      skipSlot.onclick = () => {
+        log('SUCCESS: Skip button clicked by engine!');
+        player.classList.remove('ad-showing');
+        skipSlot.remove();
+      };
+      player.appendChild(skipSlot);
+      log('Simulating Ad: Added .ad-showing and skip button.');
+    });
+
+    document.getElementById('btnSimulateAntiAdblock').addEventListener('click', () => {
+      const modal = document.createElement('tp-yt-paper-dialog');
+      modal.innerHTML = '<div class="ytd-enforcement-message-view-model"><h2>Ad blockers violate YouTube Terms</h2></div>';
+      document.body.appendChild(modal);
+      log('Simulating Anti-Adblock popup modal inserted into DOM.');
+    });
+
+    document.getElementById('btnResetSim').addEventListener('click', () => {
+      const player = document.getElementById('movie_player');
+      player.classList.remove('ad-showing');
+      document.querySelectorAll('.ytp-ad-skip-button-modern, tp-yt-paper-dialog').forEach(el => el.remove());
+      log('Simulation reset.');
+    });
+  </script>
+</body>
+</html>

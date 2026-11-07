@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Brave AdShield for YouTube™ - Cosmetic Filtering & Ad Block Styles
+   ========================================================================== */
+
+/* 1. Video Player Ad Overlays & Messages */
+.ytp-ad-overlay-container,
+.ytp-ad-message-container,
+.ytp-ad-overlay-slot,
+.ytp-ad-image-overlay,
+.ytp-ad-text-overlay,
+.ytp-ad-preview-container,
+.ytp-ad-survey,
+.ytp-ad-action-interstitial,
+.ytp-ad-action-interstitial-background,
+.ytp-suggested-action-badge[data-tooltip-target-id*="ad"],
+.annotation-type-custom.iv-promo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 2. Homepage Masthead & Promotional Banners */
+#masthead-ad,
+ytd-banner-promo-renderer,
+ytd-statement-banner-renderer,
+ytd-primetime-promo-renderer,
+#masthead-container ytd-carousel-ad-renderer,
+ytd-ad-slot-renderer,
+ytd-in-feed-ad-layout-renderer,
+ytd-rich-item-renderer:has(ytd-ad-slot-renderer),
+ytd-rich-item-renderer:has(ytd-in-feed-ad-layout-renderer),
+ytd-rich-section-renderer:has(ytd-statement-banner-renderer) {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 3. Watch Page Sidebar & Recommendation Ads */
+#player-ads,
+ytd-player-legacy-desktop-watch-ads-renderer,
+ytd-promoted-sparkles-web-renderer,
+ytd-promoted-video-renderer,
+ytd-compact-promoted-video-renderer,
+ytd-action-companion-ad-renderer,
+ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
+ytd-item-section-renderer:has(ytd-ad-slot-renderer) {
+  display: none !important;
+  height: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 4. Search Results Promoted Video Ads */
+ytd-search-pyv-renderer,
+ytd-promoted-sparkles-text-search-renderer,
+ytd-movie-offer-module-renderer {
+  display: none !important;
+}
+
+/* 5. Anti-Adblock Enforcement Modals & Dialogs */
+ytd-enforcement-message-view-model,
+tp-yt-paper-dialog:has(.ytd-enforcement-message-view-model),
+tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
+tp-yt-paper-dialog:has(#enforcement-message),
+ytd-popup-container:has(ytd-enforcement-message-view-model) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide backdrop that freezes/grays out screen */
+tp-yt-iron-overlay-backdrop {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Prevent YouTube from locking scrolling when modal triggers */
+body.ytd-app-overflow-hidden,
+html[data-dark="true"] body,
+body {
+  overflow: auto !important;
+}
+
+/* 6. Subtle visual indicator that Brave AdShield is active on player */
+#movie_player.ad-showing video {
+  filter: contrast(100%);
+}

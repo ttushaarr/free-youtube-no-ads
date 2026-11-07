@@ -1,0 +1,23 @@
+/* Mobile YouTube & Desktop YouTube Ad Filter */
+.ytp-ad-overlay-container,
+.ytp-ad-message-container,
+.ytp-ad-overlay-slot,
+.ytp-ad-image-overlay,
+.ytp-ad-text-overlay,
+.ytp-ad-preview-container,
+.ytm-promoted-sparkles-web-renderer,
+.ytm-companion-ad-renderer,
+.ytm-promoted-video-renderer,
+ytm-ad-slot-renderer,
+ytd-ad-slot-renderer,
+ytd-in-feed-ad-layout-renderer,
+#masthead-ad,
+ytd-banner-promo-renderer,
+#player-ads,
+ytd-enforcement-message-view-model,
+tp-yt-iron-overlay-backdrop {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Android Build Artifacts (Keep release/ APK)
+android/.gradle/
+android/build/
+android/app/build/
+android/.idea/
+android/*.iml
+android/local.properties
+android/.cxx/
+
+# Node / Scratch
+node_modules/
+*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class

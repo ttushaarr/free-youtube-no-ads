@@ -1,0 +1,26 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+EXT_DIR="$( cd "$DIR/../../.." && pwd )"
+
+# Candidate paths for Brave Browser
+BRAVE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+
+if [ ! -f "$BRAVE" ]; then
+    BRAVE="$HOME/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+fi
+
+if [ ! -f "$BRAVE" ]; then
+    osascript -e 'display alert "Brave Browser Not Found" message "Please make sure Brave Browser is installed in /Applications."'
+    exit 1
+fi
+
+PROFILE_DIR="$HOME/Library/Application Support/Brave-YouTube-AdFree"
+mkdir -p "$PROFILE_DIR"
+
+exec "$BRAVE" \
+  --user-data-dir="$PROFILE_DIR" \
+  --load-extension="$EXT_DIR" \
+  --app="https://www.youtube.com" \
+  --no-first-run \
+  --no-default-browser-check \
+  "$@"
