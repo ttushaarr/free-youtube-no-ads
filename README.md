@@ -5,7 +5,8 @@
 **Enjoy uninterrupted, ad-free YouTube streaming everywhere. 100% Free, Private, and Undetectable.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
-[![Android](https://img.shields.io/badge/Platform-Android%208.0+-3DDC84.svg?logo=android&logoColor=white)](android/)
+[![Android Phone](https://img.shields.io/badge/Platform-Android%20Phone-3DDC84.svg?logo=android&logoColor=white)](android/release/)
+[![Android TV](https://img.shields.io/badge/Platform-Android%20TV%20%2F%20Google%20TV-00838F.svg?logo=android&logoColor=white)](android/release/)
 [![Brave / Chrome](https://img.shields.io/badge/Extension-Manifest%20V3-FB542B.svg?logo=brave&logoColor=white)](extension/)
 [![macOS](https://img.shields.io/badge/Desktop-macOS%2011+-000000.svg?logo=apple&logoColor=white)](desktop/)
 [![AdBlock Status](https://img.shields.io/badge/Anti--Adblock-Undetectable-10b981.svg)](README.md#how-it-works)
@@ -27,10 +28,22 @@
 
 **BraveTube** is an open-source suite designed to restore the classic, uninterrupted YouTube experience across all your devices:
 
-1. **Android App (`android/`):** Dedicated mobile app with zero ads, hardware-accelerated 4K playback, floating **Picture-in-Picture (PiP)**, and **screen-off background audio playback** without needing YouTube Premium.
-2. **Brave & Chrome Extension (`extension/`):** Manifest V3 extension with 16x turbo skip, instant skip-clicker, and anti-adblock detection bypass.
-3. **macOS Native App (`desktop/`):** Standalone desktop application running in a dedicated window with zero browser URL bar clutter.
-4. **Distribution Website (`website/`):** Self-hostable, modern landing page with automatic Wi-Fi QR code for direct mobile APK downloads.
+1. **Android TV & Smart TVs ([`android/release/BraveTube-TV.apk`](android/release/)):** Specially built and optimized for **Android TV, Google TV, Fire TV, and Smart TVs** (Philips, Sony, TCL, Xiaomi, Hisense, Chromecast). Features a 10-foot Leanback remote UI (`youtube.com/tv`), full D-Pad navigation, remote media keys, screen-on wakelock, and zero ads on the big screen!
+2. **Android Phones & Tablets ([`android/release/BraveTube.apk`](android/release/)):** Dedicated mobile client with zero ads, hardware-accelerated playback, floating **Picture-in-Picture (PiP)**, and **screen-off background audio playback** without needing YouTube Premium.
+3. **Brave & Chrome Extension ([`extension/`](extension/)):** Manifest V3 extension with 16x turbo skip, instant skip-clicker, and anti-adblock detection bypass.
+4. **macOS Native App ([`desktop/`](desktop/)):** Standalone desktop application running in a dedicated window with zero browser URL bar clutter.
+5. **Distribution Website ([`website/`](website/)):** Self-hostable, modern landing page with automatic Wi-Fi QR code for direct mobile and TV APK downloads.
+
+---
+
+## 📦 Download Matrix
+
+| Device Type | Recommended Download | Key Features |
+| :--- | :--- | :--- |
+| 📺 **Smart TV / Android TV / Google TV** | [**`BraveTube-TV.apk`**](android/release/BraveTube-TV.apk) | 10-foot Leanback UI, TV remote D-Pad control, Media keys, Wakelock, 4K HDR |
+| 📱 **Android Phone / Tablet** | [**`BraveTube.apk`**](android/release/BraveTube.apk) | Screen-off background audio, Picture-in-Picture (PiP), Mobile touch gestures |
+| 🦁 **Brave / Chrome Browser** | [**`BraveAdShield-Extension.zip`**](website/downloads/BraveAdShield-Extension.zip) | Manifest V3 extension, 16x turbo fast-forward, anti-adblock immunity |
+| 🍎 **macOS (Desktop)** | [**`YouTube-AdFree-Mac.zip`**](website/downloads/YouTube-AdFree-Mac.zip) | Native borderless desktop app, Spotlight launchable |
 
 ---
 
@@ -62,21 +75,44 @@
 
 ## 🚀 Quick Installation Guides
 
-### 1. 📱 Android App (`BraveTube.apk`)
+### 1. 📺 Android TV & Smart TV App (`BraveTube-TV.apk`)
+
+Optimized for **Philips Smart TV, Sony Bravia, TCL, Xiaomi Mi TV, Chromecast with Google TV, Amazon Fire TV, and Nvidia Shield**.
+
+#### Method A: Via "Downloader" App on your TV (Fastest)
+1. On your Smart TV, open the **Google Play Store**.
+2. Search and install the free app: **"Downloader by AFTVnews"**.
+3. In Downloader, type the direct URL to the TV APK:
+   ```text
+   https://github.com/ttushaarr/free-youtube-no-ads/raw/main/android/release/BraveTube-TV.apk
+   ```
+4. Click **Go** → Click **Install**. BraveTube will appear on your TV home screen!
+
+#### Method B: Via Wireless ADB from Laptop
+If Network Debugging is enabled on your TV:
+```bash
+adb connect <tv-ip-address>:5555
+adb install -r android/release/BraveTube-TV.apk
+```
+
+---
+
+### 2. 📱 Android Phone & Tablet App (`BraveTube.apk`)
+
+Optimized for **mobile touchscreens with screen-off background play**.
 
 #### Direct Download
-- Download the precompiled APK directly from `android/release/BraveTube.apk` or via the built-in [website](website/).
-- Tap the APK file on your Android phone and select **"Install"** (enable *"Allow from this source"* if prompted).
+- Download [**`BraveTube.apk`**](android/release/BraveTube.apk) directly to your phone.
+- Tap the APK file and select **"Install"** (enable *"Allow from this source"* if prompted).
 
 #### Installing via USB / ADB
-If your phone is connected to your computer via USB debugging:
 ```bash
 adb install -r android/release/BraveTube.apk
 ```
 
 ---
 
-### 2. 🦁 Brave & Chrome Extension (`extension/`)
+### 3. 🦁 Brave & Chrome Extension (`extension/`)
 
 1. Open your browser and navigate to:
    ```text
@@ -151,7 +187,9 @@ free-youtube-no-ads/
 │   │   ├── src/main/assets/         # AdShield JS & CSS injection scripts
 │   │   └── src/main/AndroidManifest.xml
 │   ├── release/
-│   │   └── BraveTube.apk            # Prebuilt, ready-to-install Android APK
+│   │   ├── BraveTube-TV.apk         # Specially built for Android TV & Smart TVs (Leanback D-Pad)
+│   │   ├── BraveTube.apk            # Built for Android Phones & Tablets (Background Play & PiP)
+│   │   └── README.md                # Detailed release guide & device compatibility
 │   ├── build.gradle.kts
 │   └── settings.gradle.kts
 ├── extension/                       # Manifest V3 Extension for Brave / Chrome
