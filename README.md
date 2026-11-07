@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🦁⚡ BraveTube — Free YouTube Without Any Ads
+# ⚡ BraveTube — Free YouTube Without Any Ads
 
 **Enjoy uninterrupted, ad-free YouTube streaming everywhere. 100% Free, Private, and Undetectable.**
 
