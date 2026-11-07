@@ -2,13 +2,18 @@ package com.adshield.youtube
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
+import android.app.UiModeManager
+import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.Rational
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -33,6 +38,10 @@ class MainActivity : AppCompatActivity() {
 
     private var injectJs: String = ""
     private var injectCss: String = ""
+    private var isTvDevice: Boolean = false
+
+    // Smart TV User Agent (trigggers YouTube's 10-foot remote-friendly Leanback UI)
+    private val TV_USER_AGENT = "Mozilla/5.0 (Linux; GoogleTV 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
 
     private val blockedAdDomains = listOf(
         "googleads.g.doubleclick.net",
@@ -48,6 +57,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        isTvDevice = isRunningOnTv()
+
+        // Keep screen awake continuously if running on Smart TV
+        if (isTvDevice) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
 
         webView = findViewById(R.id.webView)
         progressBar = findViewById(R.id.progressBar)
@@ -72,8 +88,24 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState)
         } else {
-            webView.loadUrl("https://m.youtube.com")
+            // If running on a TV, load Leanback remote UI; if on Phone, load mobile UI
+            val targetUrl = if (isTvDevice) "https://www.youtube.com/tv" else "https://m.youtube.com"
+            webView.loadUrl(targetUrl)
         }
+    }
+
+    /**
+     * Accurately detects whether the app is executing on an Android TV / Google TV device
+     */
+    private fun isRunningOnTv(): Boolean {
+        val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as? UiModeManager
+        if (uiModeManager?.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            return true
+        }
+        val pm = packageManager
+        val isLeanback = pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+        val hasNoTouch = !pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
+        return isLeanback || hasNoTouch
     }
 
     private fun loadAssets() {
@@ -101,7 +133,21 @@ class MainActivity : AppCompatActivity() {
         settings.displayZoomControls = false
         settings.cacheMode = WebSettings.LOAD_DEFAULT
 
-        settings.userAgentString = settings.userAgentString.replace("; wv", "")
+        if (isTvDevice) {
+            // Android TV optimizations: Leanback User-Agent & 4-way D-Pad focus navigation
+            settings.userAgentString = TV_USER_AGENT
+            try {
+                // Enable spatial navigation for TV remote directional arrows
+                val setSpatialNavMethod = settings.javaClass.getMethod("setSupportSpatialNavigation", Boolean::class.javaPrimitiveType)
+                setSpatialNavMethod.invoke(settings, true)
+            } catch (ignored: Exception) {}
+
+            webView.isFocusable = true
+            webView.isFocusableInTouchMode = true
+            webView.requestFocus()
+        } else {
+            settings.userAgentString = settings.userAgentString.replace("; wv", "")
+        }
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(
@@ -204,16 +250,55 @@ class MainActivity : AppCompatActivity() {
         customViewCallback = null
     }
 
+    /**
+     * TV Remote Controller Key Handler (D-Pad, Play/Pause, Fast Forward, Rewind)
+     */
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        val action = event.action
+        val keyCode = event.keyCode
+
+        if (action == KeyEvent.ACTION_DOWN) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+                KeyEvent.KEYCODE_MEDIA_PLAY,
+                KeyEvent.KEYCODE_MEDIA_PAUSE -> {
+                    // Send spacebar toggle to player
+                    webView.evaluateJavascript(
+                        "(function(){ var v=document.querySelector('video'); if(v){ v.paused ? v.play() : v.pause(); } })()",
+                        null
+                    )
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_FAST_FORWARD -> {
+                    // Fast forward 10 seconds
+                    webView.evaluateJavascript(
+                        "(function(){ var v=document.querySelector('video'); if(v){ v.currentTime += 10; } })()",
+                        null
+                    )
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_REWIND -> {
+                    // Rewind 10 seconds
+                    webView.evaluateJavascript(
+                        "(function(){ var v=document.querySelector('video'); if(v){ v.currentTime -= 10; } })()",
+                        null
+                    )
+                    return true
+                }
+            }
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (!isTvDevice && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
                 val params = PictureInPictureParams.Builder()
                     .setAspectRatio(Rational(16, 9))
                     .build()
                 enterPictureInPictureMode(params)
-            } catch (e: Exception) {
-            }
+            } catch (ignored: Exception) {}
         }
     }
 
