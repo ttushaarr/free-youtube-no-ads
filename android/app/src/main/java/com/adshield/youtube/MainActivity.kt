@@ -9,6 +9,8 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Rational
 import android.view.KeyEvent
 import android.view.View
@@ -23,6 +25,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import java.io.ByteArrayInputStream
@@ -39,9 +42,10 @@ class MainActivity : AppCompatActivity() {
     private var injectJs: String = ""
     private var injectCss: String = ""
     private var isTvDevice: Boolean = false
+    private var doubleBackToExitPressedOnce = false
 
-    // Smart TV User Agent (trigggers YouTube's 10-foot remote-friendly Leanback UI)
-    private val TV_USER_AGENT = "Mozilla/5.0 (Linux; GoogleTV 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+    // Smart TV User Agent: Triggers authentic 10-foot Leanback TV experience on YouTube
+    private val TV_USER_AGENT = "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/4.0 Chrome/85.0.4183.93 TV Safari/537.36"
 
     private val blockedAdDomains = listOf(
         "googleads.g.doubleclick.net",
@@ -50,7 +54,8 @@ class MainActivity : AppCompatActivity() {
         "pagead2.googlesyndication.com",
         "securepubads.g.doubleclick.net",
         "youtube.com/pagead/",
-        "youtube.com/api/stats/ads"
+        "youtube.com/api/stats/ads",
+        "youtube.com/get_midroll_"
     )
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -60,10 +65,13 @@ class MainActivity : AppCompatActivity() {
 
         isTvDevice = isRunningOnTv()
 
-        // Keep screen awake continuously if running on Smart TV
+        // 1. Keep display awake on TV so screensavers never disrupt video playback
         if (isTvDevice) {
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
+
+        // 2. Enforce true fullscreen immersion
+        applyImmersiveMode()
 
         webView = findViewById(R.id.webView)
         progressBar = findViewById(R.id.progressBar)
@@ -72,10 +80,13 @@ class MainActivity : AppCompatActivity() {
         loadAssets()
         setupWebView()
 
+        // Handle Back button for phone / tablet
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (customView != null) {
                     hideCustomView()
+                } else if (isTvDevice) {
+                    handleTvBackPress()
                 } else if (webView.canGoBack()) {
                     webView.goBack()
                 } else {
@@ -88,14 +99,33 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState)
         } else {
-            // If running on a TV, load Leanback remote UI; if on Phone, load mobile UI
+            // Load authentic TV Leanback interface on TV; mobile touch web on phones
             val targetUrl = if (isTvDevice) "https://www.youtube.com/tv" else "https://m.youtube.com"
             webView.loadUrl(targetUrl)
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        applyImmersiveMode()
+    }
+
     /**
-     * Accurately detects whether the app is executing on an Android TV / Google TV device
+     * Enforce borderless, full-bleed immersive fullscreen (hides status & nav bars)
+     */
+    private fun applyImmersiveMode() {
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        )
+    }
+
+    /**
+     * Accurately detects whether the app is executing on an Android TV / Google TV
      */
     private fun isRunningOnTv(): Boolean {
         val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as? UiModeManager
@@ -122,6 +152,13 @@ class MainActivity : AppCompatActivity() {
         CookieManager.getInstance().setAcceptCookie(true)
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
 
+        // Hardware-accelerate rendering for 60fps 4K video playback
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        webView.isVerticalScrollBarEnabled = false
+        webView.isHorizontalScrollBarEnabled = false
+        webView.overScrollMode = View.OVER_SCROLL_NEVER
+        webView.setBackgroundColor(0xFF000000.toInt())
+
         val settings = webView.settings
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
@@ -133,13 +170,23 @@ class MainActivity : AppCompatActivity() {
         settings.displayZoomControls = false
         settings.cacheMode = WebSettings.LOAD_DEFAULT
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
+
         if (isTvDevice) {
-            // Android TV optimizations: Leanback User-Agent & 4-way D-Pad focus navigation
+            // Emulate authentic Smart TV environment
             settings.userAgentString = TV_USER_AGENT
             try {
                 // Enable spatial navigation for TV remote directional arrows
                 val setSpatialNavMethod = settings.javaClass.getMethod("setSupportSpatialNavigation", Boolean::class.javaPrimitiveType)
                 setSpatialNavMethod.invoke(settings, true)
+            } catch (ignored: Exception) {}
+
+            try {
+                // Pre-rasterize offscreen tiles for butter-smooth TV scrolling
+                val setOffscreenPreRaster = settings.javaClass.getMethod("setOffscreenPreRaster", Boolean::class.javaPrimitiveType)
+                setOffscreenPreRaster.invoke(settings, true)
             } catch (ignored: Exception) {}
 
             webView.isFocusable = true
@@ -168,7 +215,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                progressBar.visibility = View.VISIBLE
+                if (!isTvDevice) {
+                    progressBar.visibility = View.VISIBLE
+                }
                 injectAdBlock()
                 super.onPageStarted(view, url, favicon)
             }
@@ -182,9 +231,11 @@ class MainActivity : AppCompatActivity() {
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                progressBar.progress = newProgress
-                if (newProgress == 100) {
-                    progressBar.visibility = View.GONE
+                if (!isTvDevice) {
+                    progressBar.progress = newProgress
+                    if (newProgress == 100) {
+                        progressBar.visibility = View.GONE
+                    }
                 }
             }
 
@@ -205,6 +256,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 customViewContainer.visibility = View.VISIBLE
                 webView.visibility = View.GONE
+                applyImmersiveMode()
             }
 
             override fun onHideCustomView() {
@@ -248,21 +300,53 @@ class MainActivity : AppCompatActivity() {
         webView.visibility = View.VISIBLE
         customViewCallback?.onCustomViewHidden()
         customViewCallback = null
+        applyImmersiveMode()
     }
 
     /**
-     * TV Remote Controller Key Handler (D-Pad, Play/Pause, Fast Forward, Rewind)
+     * TV Remote Controller Key Handler (D-Pad, Media Keys, Navigation)
      */
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (!isTvDevice) {
+            return super.dispatchKeyEvent(event)
+        }
+
         val action = event.action
         val keyCode = event.keyCode
 
+        // TV Remote Navigation: Bridge hardware D-Pad directly to Leanback DOM
         if (action == KeyEvent.ACTION_DOWN) {
             when (keyCode) {
+                KeyEvent.KEYCODE_DPAD_UP -> {
+                    dispatchKeyToJs("ArrowUp", 38)
+                    return true
+                }
+                KeyEvent.KEYCODE_DPAD_DOWN -> {
+                    dispatchKeyToJs("ArrowDown", 40)
+                    return true
+                }
+                KeyEvent.KEYCODE_DPAD_LEFT -> {
+                    dispatchKeyToJs("ArrowLeft", 37)
+                    return true
+                }
+                KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                    dispatchKeyToJs("ArrowRight", 39)
+                    return true
+                }
+                KeyEvent.KEYCODE_DPAD_CENTER,
+                KeyEvent.KEYCODE_ENTER,
+                KeyEvent.KEYCODE_NUMPAD_ENTER -> {
+                    dispatchKeyToJs("Enter", 13)
+                    return true
+                }
+                KeyEvent.KEYCODE_BACK -> {
+                    handleTvBackPress()
+                    return true
+                }
                 KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
                 KeyEvent.KEYCODE_MEDIA_PLAY,
                 KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-                    // Send spacebar toggle to player
+                    // Send play/pause toggle directly to video element
                     webView.evaluateJavascript(
                         "(function(){ var v=document.querySelector('video'); if(v){ v.paused ? v.play() : v.pause(); } })()",
                         null
@@ -270,7 +354,7 @@ class MainActivity : AppCompatActivity() {
                     return true
                 }
                 KeyEvent.KEYCODE_MEDIA_FAST_FORWARD -> {
-                    // Fast forward 10 seconds
+                    // Jump +10s
                     webView.evaluateJavascript(
                         "(function(){ var v=document.querySelector('video'); if(v){ v.currentTime += 10; } })()",
                         null
@@ -278,7 +362,7 @@ class MainActivity : AppCompatActivity() {
                     return true
                 }
                 KeyEvent.KEYCODE_MEDIA_REWIND -> {
-                    // Rewind 10 seconds
+                    // Jump -10s
                     webView.evaluateJavascript(
                         "(function(){ var v=document.querySelector('video'); if(v){ v.currentTime -= 10; } })()",
                         null
@@ -288,6 +372,34 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.dispatchKeyEvent(event)
+    }
+
+    /**
+     * Dispatch synthetic KeyboardEvent to YouTube TV DOM for instant D-Pad responsiveness
+     */
+    private fun dispatchKeyToJs(keyName: String, keyCode: Int) {
+        val script = "if (window.BraveTubeRemote) { window.BraveTubeRemote.dispatchKey('$keyName', $keyCode); }"
+        webView.evaluateJavascript(script, null)
+    }
+
+    /**
+     * Handle TV Back button: Mimics native YouTube on TV back navigation
+     */
+    private fun handleTvBackPress() {
+        if (doubleBackToExitPressedOnce) {
+            finish()
+            return
+        }
+
+        // Send Escape key to YouTube TV UI (closes player, opens side menu, backs out of search)
+        dispatchKeyToJs("Escape", 27)
+
+        // If at root level, double press exits cleanly
+        doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Press Back again to exit", Toast.LENGTH_SHORT).show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false
+        }, 2000)
     }
 
     override fun onUserLeaveHint() {

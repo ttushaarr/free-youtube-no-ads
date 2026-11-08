@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- Android TV Compatibility Declarations -->
-    <!-- Declaring touchscreen=false is mandatory for Android TV OS to accept and show the app -->
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -18,10 +17,19 @@
         android:name="android.hardware.faketouch"
         android:required="false" />
     <uses-feature
+        android:name="android.hardware.screen.landscape"
+        android:required="false" />
+    <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
         android:required="false" />
 
     <application
@@ -32,12 +40,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
-        android:theme="@style/Theme.BraveTube">
+        android:largeHeap="true"
+        android:theme="@style/Theme.BraveTube.TV">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode|navigation|keyboard"
             android:supportsPictureInPicture="true"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="unspecified">

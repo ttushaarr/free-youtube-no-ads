@@ -1,10 +1,23 @@
 <resources>
+    <!-- Base Theme -->
     <style name="Theme.BraveTube" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">#0F1015</item>
-        <item name="android:statusBarColor">#0F1015</item>
-        <item name="android:navigationBarColor">#0F1015</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">#FF6200</item>
-        <item name="colorPrimaryDark">#0F1015</item>
+        <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">#FF0033</item>
+    </style>
+
+    <!-- TV Fullscreen Immersive Theme -->
+    <style name="Theme.BraveTube.TV" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 </resources>

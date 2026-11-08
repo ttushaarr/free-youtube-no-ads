@@ -1,23 +1,78 @@
-/* Mobile YouTube & Desktop YouTube Ad Filter */
+/* ==========================================================================
+   BraveTube TV - Ultra-Clean OLED Dark Theme & Ad Filter
+   ========================================================================== */
+
+/* 1. Global TV Cleanliness & Zero Scrollbars */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+html, body {
+  background-color: #000000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  user-select: none !important;
+}
+
+/* 2. Video Ad Overlays & Messages (Mobile & TV) */
 .ytp-ad-overlay-container,
 .ytp-ad-message-container,
 .ytp-ad-overlay-slot,
 .ytp-ad-image-overlay,
 .ytp-ad-text-overlay,
 .ytp-ad-preview-container,
-.ytm-promoted-sparkles-web-renderer,
-.ytm-companion-ad-renderer,
-.ytm-promoted-video-renderer,
+.ytp-ad-survey,
+.ytp-ad-action-interstitial,
+.ytp-ad-action-interstitial-background,
+.ytp-suggested-action-badge[data-tooltip-target-id*="ad"],
+.annotation-type-custom.iv-promo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 3. Leanback TV Banner Ads & Sponsored Rows */
+ytm-promoted-sparkles-web-renderer,
+ytm-companion-ad-renderer,
+ytm-promoted-video-renderer,
 ytm-ad-slot-renderer,
 ytd-ad-slot-renderer,
 ytd-in-feed-ad-layout-renderer,
 #masthead-ad,
 ytd-banner-promo-renderer,
 #player-ads,
+.ad-container,
+.ad-display,
+.ad-showing .ytp-ad-player-overlay {
+  display: none !important;
+  height: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 4. Anti-Adblock Warning Modals & Dialogs */
 ytd-enforcement-message-view-model,
+tp-yt-paper-dialog:has(.ytd-enforcement-message-view-model),
+tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
 tp-yt-iron-overlay-backdrop {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+/* 5. Enhanced Remote D-Pad Focus Ring for 10-foot TV Viewing */
+:focus {
+  outline: 3px solid #ff6200 !important;
+  outline-offset: 2px !important;
+  transition: transform 0.15s ease-out, outline 0.15s ease-out !important;
 }
